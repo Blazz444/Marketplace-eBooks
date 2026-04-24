@@ -1,0 +1,30 @@
+# Node modules
+node_modules/
+npm-debug.log
+yarn.lock
+package-lock.json
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*.code-workspace
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Build
+dist/
+build/
+.cache/
+
+# Firebase
+firebase-debug.log
+.firebaserc

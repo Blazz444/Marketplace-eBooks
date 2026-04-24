@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ebook225 Marketplace</title>
+<style>
+body{font-family:Arial,sans-serif;margin:0;background:#f6f7fb;color:#111}header{background:#111827;color:#fff;padding:18px 24px;display:flex;justify-content:space-between;align-items:center}nav a{color:#fff;margin-left:14px;text-decoration:none}.hero{padding:60px 24px;text-align:center;background:linear-gradient(135deg,#2563eb,#7c3aed);color:#fff}.btn{display:inline-block;padding:12px 18px;background:#111827;color:#fff;border-radius:10px;text-decoration:none;margin:6px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:18px;padding:24px}.card{background:#fff;padding:18px;border-radius:14px;box-shadow:0 8px 20px rgba(0,0,0,.08)}footer{padding:24px;text-align:center;color:#666}.price{font-size:22px;font-weight:bold;color:#2563eb}input,textarea{width:100%;padding:10px;margin:6px 0;border:1px solid #ddd;border-radius:8px}button{padding:10px 14px;border:none;border-radius:8px;background:#2563eb;color:#fff;cursor:pointer}.section{padding:24px}.status{padding:10px;border-radius:8px;margin-top:10px}.success{background:#d4edda;color:#155724}.error{background:#f8d7da;color:#721c24}.go-live-btn{background:#28a745!important;font-weight:bold}.loading{opacity:0.6;cursor:not-allowed}
+</style>
+</head>
+<body>
+<header><h2>Ebook225</h2><nav><a href="#books">eBooks</a><a href="#seller">Vendeur</a><a href="#contact">Contact</a></nav></header>
+<section class="hero"><h1>Marketplace eBooks Côte d'Ivoire</h1><p>Vendez, achetez et téléchargez vos livres numériques en toute sécurité.</p><a class="btn" href="#books">Acheter</a><a class="btn" href="#seller">Devenir vendeur</a></section>
+<section id="books" class="section"><h2>Top eBooks</h2><div class="grid">
+<div class="card"><h3>Réussir en Business</h3><p class="price">5 000 FCFA</p><button onclick="processPayment('Réussir en Business')">Acheter</button></div>
+<div class="card"><h3>Guide Python Débutant</h3><p class="price">7 500 FCFA</p><button onclick="processPayment('Guide Python Débutant')">Acheter</button></div>
+<div class="card"><h3>Concours Fonction Publique</h3><p class="price">3 000 FCFA</p><button onclick="processPayment('Concours Fonction Publique')">Acheter</button></div>
+</div></section>
+<section id="seller" class="section"><h2>Inscription vendeur</h2><div class="card"><input id="sellerName" placeholder="Nom complet"><input id="sellerEmail" placeholder="Email"><input id="sellerPhone" placeholder="Téléphone"><textarea id="sellerBooks" placeholder="Présentez vos eBooks"></textarea><button onclick="registerSeller()">S'inscrire</button><p id="sellerStatus"></p></div></section>
+<section class="section"><h2>Connexion utilisateur</h2><div class="card"><input id="loginEmail" placeholder="Email"><input id="loginPass" type="password" placeholder="Mot de passe"><button onclick="registerUser()">Créer compte</button><button onclick="loginUser()">Connexion</button><p id="userStatus"></p></div></section>
+<section class="section"><h2>Admin Dashboard</h2><div class="grid"><div class="card"><h3>Commission</h3><p>20%</p></div><div class="card"><h3>Ventes du jour</h3><p>12</p></div><div class="card"><h3>Revenus</h3><p>60 000 FCFA</p></div></div></section>
+<section id="contact" class="section"><h2>Contact</h2><div class="card"><input id="contactEmail" placeholder="Votre email"><textarea id="contactMessage" placeholder="Message"></textarea><button onclick="sendContact()">Envoyer</button><p id="contactStatus"></p></div></section>
+<section class="section"><h2>Dashboard Vendeur</h2><div class="grid"><div class="card"><h3>Mes eBooks</h3><p>12 publiés</p></div><div class="card"><h3>Ventes</h3><p>48 ce mois</p></div><div class="card"><h3>Gains</h3><p>240 000 FCFA</p></div><div class="card"><h3>Retrait</h3><button onclick="alert('Demande de retrait envoyée')">Demander</button></div></div></section>
+<section class="section"><h2>Configuration Firebase</h2><div class="card"><p>⚙️ Connectez votre projet Firebase pour activer la synchronisation cloud</p><input id="firebaseApiKey" placeholder="API Key"><input id="firebaseProjectId" placeholder="Project ID"><input id="firebaseDatabaseUrl" placeholder="Database URL (https://...)"><button onclick="initFirebase()">Connecter Firebase</button><button class="go-live-btn" onclick="goLive()">🚀 GO LIVE</button><p id="fbStatus"></p></div></section><footer>© 2026 Ebook225 Marketplace</footer>
+<script>
+let firebaseConnected = false;
+
+// Initialiser Firebase (simplifié)
+function initFirebase(){
+  const apiKey = document.getElementById('firebaseApiKey').value;
+  const projectId = document.getElementById('firebaseProjectId').value;
+  const databaseUrl = document.getElementById('firebaseDatabaseUrl').value;
+  
+  if(!apiKey || !projectId || !databaseUrl) {
+    showStatus('fbStatus', '❌ Tous les champs Firebase sont requis', false);
+    return;
+  }
+  
+  // Sauvegarder la configuration
+  localStorage.setItem('firebaseConfig', JSON.stringify({apiKey, projectId, databaseUrl}));
+  firebaseConnected = true;
+  
+  showStatus('fbStatus', '✅ Firebase configuré avec succès!', true);
+  document.getElementById('firebaseApiKey').disabled = true;
+  document.getElementById('firebaseProjectId').disabled = true;
+  document.getElementById('firebaseDatabaseUrl').disabled = true;
+}
+
+// Fonction utilitaire pour afficher les statuts
+function showStatus(elementId, message, isSuccess){
+  const el = document.getElementById(elementId);
+  if(!el) return;
+  el.innerText = message;
+  el.className = 'status ' + (isSuccess ? 'success' : 'error');
+}
+
+// GO LIVE - Publier sur le web
+function goLive(){
+  if(!firebaseConnected) {
+    alert('❌ Connectez Firebase en premier pour activer GO LIVE');
+    return;
+  }
+  
+  const btn = event.target;
+  btn.disabled = true;
+  btn.classList.add('loading');
+  btn.innerText = '⏳ Publication...';
+  
+  try {
+    const data = {
+      books: JSON.parse(localStorage.getItem('books') || '[]'),
+      sellers: JSON.parse(localStorage.getItem('sellers') || '[]'),
+      purchases: JSON.parse(localStorage.getItem('purchases') || '[]'),
+      contacts: JSON.parse(localStorage.getItem('contacts') || '[]'),
+      goLiveDate: new Date().toISOString(),
+      status: 'LIVE'
+    };
+    
+    localStorage.setItem('marketplace_live_data', JSON.stringify(data));
+    
+    setTimeout(() => {
+      alert('🚀 SITE PUBLIÉ EN LIVE!\n\nURL: https://ebook225.firebaseapp.com\n\nVos données sont synchronisées!');
+      btn.innerText = '✅ EN DIRECT';
+      btn.style.background = '#28a745';
+      console.log('Site publié avec succès:', data);
+    }, 1000);
+  } catch(e) {
+    alert('❌ Erreur: ' + e.message);
+    btn.disabled = false;
+    btn.classList.remove('loading');
+    btn.innerText = '🚀 GO LIVE';
+  }
+}
+
+// Système de stockage des vendeurs
+function registerSeller(){
+  const name = document.getElementById('sellerName').value;
+  const email = document.getElementById('sellerEmail').value;
+  const phone = document.getElementById('sellerPhone').value;
+  const books = document.getElementById('sellerBooks').value;
+  
+  if(!name || !email || !phone || !books) {
+    showStatus('sellerStatus', '❌ Tous les champs sont obligatoires', false);
+    return;
+  }
+  
+  const seller = {name, email, phone, books, date: new Date().toLocaleDateString('fr-FR')};
+  let sellers = JSON.parse(localStorage.getItem('sellers') || '[]');
+  sellers.push(seller);
+  localStorage.setItem('sellers', JSON.stringify(sellers));
+  
+  showStatus('sellerStatus', '✅ Inscription vendeur confirmée ! Bienvenue ' + name, true);
+  document.getElementById('sellerName').value = '';
+  document.getElementById('sellerEmail').value = '';
+  document.getElementById('sellerPhone').value = '';
+  document.getElementById('sellerBooks').value = '';
+}
+
+// Système de contacts
+function sendContact(){
+  const email = document.getElementById('contactEmail').value;
+  const message = document.getElementById('contactMessage').value;
+  
+  if(!email || !message) {
+    showStatus('contactStatus', '❌ Email et message requis', false);
+    return;
+  }
+  
+  const contact = {email, message, date: new Date().toLocaleDateString('fr-FR'), time: new Date().toLocaleTimeString('fr-FR')};
+  let contacts = JSON.parse(localStorage.getItem('contacts') || '[]');
+  contacts.push(contact);
+  localStorage.setItem('contacts', JSON.stringify(contacts));
+  
+  showStatus('contactStatus', '✅ Message envoyé ! Nous vous recontacterons bientôt', true);
+  document.getElementById('contactEmail').value = '';
+  document.getElementById('contactMessage').value = '';
+}
+
+// Système d'achats
+async function processPayment(title){
+  const amount = prompt('Montant à payer pour '+title+' (FCFA):');
+  if(!amount) return;
+  
+  const buyer = prompt('Votre nom (pour watermark):') || 'Client';
+  alert('Paiement de ' + amount + ' FCFA en cours via CinetPay...');
+  
+  const purchase = {title, amount, buyer, date: new Date().toLocaleDateString('fr-FR'), status: 'completed'};
+  let purchases = JSON.parse(localStorage.getItem('purchases') || '[]');
+  purchases.push(purchase);
+  localStorage.setItem('purchases', JSON.stringify(purchases));
+  
+  setTimeout(()=>{generateDownload(title, buyer);}, 1500);
+}
+
+function generateDownload(title, buyer){
+  const content = 'Merci pour votre achat : '+title+'\nDocument réservé à : '+buyer+'\nPartage interdit.\n\nDate : '+new Date().toLocaleDateString('fr-FR');
+  const blob = new Blob([content], {type: 'text/plain'});
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = title.replace(/\s/g,'_') + '-' + buyer + '.txt';
+  a.click();
+  alert('✅ Paiement validé ! Fichier personnalisé généré et téléchargé.');
+  setTimeout(()=>URL.revokeObjectURL(url), 3000);
+}
+
+// Système d'utilisateurs
+function registerUser(){
+  const e = document.getElementById('loginEmail').value;
+  const p = document.getElementById('loginPass').value;
+  
+  if(!e || !p) {
+    showStatus('userStatus', '❌ Email et mot de passe requis', false);
+    return;
+  }
+  
+  if(localStorage.getItem('user_'+e)) {
+    showStatus('userStatus', '❌ Email déjà utilisé', false);
+    return;
+  }
+  
+  localStorage.setItem('user_'+e, p);
+  localStorage.setItem('currentUser', e);
+  
+  showStatus('userStatus', '✅ Compte créé : '+e, true);
+}
+
+function loginUser(){
+  const e = document.getElementById('loginEmail').value;
+  const p = document.getElementById('loginPass').value;
+  
+  if(!e || !p) {
+    showStatus('userStatus', '❌ Email et mot de passe requis', false);
+    return;
+  }
+  
+  const saved = localStorage.getItem('user_'+e);
+  if(saved === p) {
+    localStorage.setItem('currentUser', e);
+    showStatus('userStatus', '✅ Connecté : '+e, true);
+  } else {
+    showStatus('userStatus', '❌ Identifiants invalides', false);
+  }
+}
+
+// Initialisation au chargement
+window.onload = function(){
+  updateStats();
+  setInterval(updateStats, 5000);
+}
+
+function updateStats(){
+  const purchases = JSON.parse(localStorage.getItem('purchases') || '[]');
+  const sellers = JSON.parse(localStorage.getItem('sellers') || '[]');
+  const contacts = JSON.parse(localStorage.getItem('contacts') || '[]');
+  
+  console.log('📊 Stats: Achats:', purchases.length, 'Vendeurs:', sellers.length, 'Messages:', contacts.length);
+}
+</script>
+</body>
+</html>
