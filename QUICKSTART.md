@@ -7,7 +7,7 @@
 Allez sur : **https://github.com/new**
 
 Remplissez :
-- **Repository name** : `marketplace-ebooks`  
+- **Repository name** : `Marketplace-eBooks`  
 - **Description** : `Marketplace pour vendre des eBooks`  
 - **Public** : Oui
 - **Initialize with** : ❌ Ne rien cocher
@@ -18,7 +18,7 @@ Cliquez **Create repository**
 
 Après création, GitHub vous montre une page avec une URL. Ça ressemble à :
 ```
-https://github.com/votre-username/marketplace-ebooks.git
+https://github.com/Blazz444/Marketplace-eBooks.git
 ```
 
 Copiez cette URL complète.
@@ -32,10 +32,10 @@ cd C:\Users\TRUST\Desktop\marketplace-ebooks
 
 ### 4. Collez ces 3 commandes (une par une)
 
-Remplacez `https://github.com/votre-username/marketplace-ebooks.git` par l'URL que vous avez copiée :
+Voici la commande (elle est déjà configurée pour votre repo) :
 
 ```powershell
-git remote add origin https://github.com/votre-username/marketplace-ebooks.git
+git remote add origin https://github.com/Blazz444/Marketplace-eBooks.git
 ```
 
 Appuyez sur **Entrée**
@@ -67,7 +67,7 @@ Si vous avez un message "password", utilisez un **Personal Access Token** :
 ### ✅ C'est fait!
 
 Votre code est maintenant sur GitHub à :  
-**https://github.com/votre-username/marketplace-ebooks**
+**https://github.com/Blazz444/Marketplace-eBooks**
 
 ---
 
